@@ -1,17 +1,21 @@
-export function renderImage(image) {
-    const markup = image.hits
+export function renderImage(array) {
+    const markup = array.hits
         .map(
-            img =>
+            array =>
                 `<div class="photo-card">
-    <img src="${img.webformatURL}" alt="${img.tags}" loading="lazy" />
-      <div class="info">  <p class="info-item <b>Likes:</b>${img.likes}</p>
-       <p class="info-item  <b>Views:</b>${img.views}</p>
-        <p class="info-item">
-         <b>Comments:</b>${img.comments}</p>
-          <p class="info-item">
-           <b>Downloads:</b>${img.downloads}</p></div>
+    <img src="${array.webformatURL}" alt="${array.tags}" loading="lazy" />
+      <div class="info">
+      <p class="info-item">
+      <b>Likes:</b>${array.likes}</p>  
+         <p class="info-item">
+          <b>Views:</b>${array.views}</p>
+           <p class="info-item">
+            <b>Comments:</b>${array.comments}</p>
+             <p class="info-item">
+              <b>Downloads:</b>${array.downloads}</p></div>
     </div>`
-    ).join('');
+        ).join('');
     
     return markup;
-};
+}
+
