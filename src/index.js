@@ -1,21 +1,25 @@
-import axios from "axios";
-import Notiflix from "notiflix";
-import fetchImages from "./api/fetchImages";
+import axios from 'axios';
+import Notiflix from 'notiflix';
+import fetchImages from './api/fetchImages';
+import renderImage from './markup';
 
-const inputEL = document.querySelector('.form-input');
-const buttonEl = document.querySelector('.form-button');
+const formEl = document.querySelector('.search-form');
+const galleryEl = document.querySelector('.gallery');
+
 
 const onSearchImages = event => {
-  const image = event.target.value.trim();
+  event.preventDefault();
+  const images = event.target.elements.searchQuery.value.trim();
 
-  fetchImages(image)
-    .then(images => console.log(images))
-    .catch(error => {
-      if (error.status === 404) {
-        Notiflix.Notify.failure();
-      }
-    });
+  fetchImages(images).then(image => {
+    if (image.total === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
+    console.log(image);
+  });
 };
 
-inputEL.addEventListener('input', onSearchImages);
-
+formEl.addEventListener('submit', onSearchImages);
