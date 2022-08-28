@@ -36,6 +36,8 @@ body {
     padding-left: 14px;
 }
 .search-form button {
+    border: none;
+    border-radius: 4px;
     cursor: pointer;
     font-size: large;
 }
@@ -49,10 +51,15 @@ body {
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: flex-end;
-    padding-top: 100px;  
+    padding-top: 100px; 
+    margin-bottom: 30px; 
     margin-left: auto;
     margin-right: auto;
             
+}
+.gallery__item {
+    color: #212121;
+    text-decoration: none;
 }
 .gallery img {
     width: 300px;
@@ -71,4 +78,21 @@ body {
 }
 .info-item b {
     margin-right: 5px;
+}
+.load-more {
+    margin: 0 auto;
+    margin-bottom: 50px;
+    width: 110px;
+    height: 40px;
+    cursor: pointer;
+    font-size: large;
+    border: none;
+    color: rgb(200, 223, 243);
+    background-color: rgb(109, 199, 199);
+    border-radius: 4px;
+}
+.load-more:hover,
+.load-more:focus {
+    color: green;
+    background-color: darkgray;
 }

@@ -2,7 +2,8 @@ export function renderImage(array) {
     const markup = array.hits
         .map(
             array =>
-                `<div class="photo-card">
+                `<a class="gallery__item" href="${array.largeImageURL}">
+                <div class="photo-card">
     <img src="${array.webformatURL}" alt="${array.tags}" loading="lazy" />
       <div class="info">
       <p class="info-item">
@@ -13,9 +14,10 @@ export function renderImage(array) {
             <b>Comments:</b>${array.comments}</p>
              <p class="info-item">
               <b>Downloads:</b>${array.downloads}</p></div>
-    </div>`
+    </div></a>`
         ).join('');
     
     return markup;
 }
+
 
