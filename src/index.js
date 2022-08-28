@@ -46,7 +46,6 @@ const onSearchImages = (event) => {
 
 const onLoadMore = (event) => {
   fetchImages(images, (page += 1)).then(image => {
-    console.log(image);
     const array = image.data;
     if (Math.floor(image.data.totalHits / 40) < page) {
       Notiflix.Notify.info(
