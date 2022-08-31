@@ -4,10 +4,18 @@ import Notiflix from 'notiflix';
 export default async function fetchImages(q, page=1) {
   try {
     const BASE_URL = 'https://pixabay.com/api/';
-    const KEY = '29531020-3b97d8056313c52b7859c1bca';
-    const FILTERS ='image_type=photo&orientation=horizontal&safesearch=true&per_page=40';
-  
-    const response = await axios.get(`${BASE_URL}?key=${KEY}&q=${q}&${FILTERS}&page=${page}`);
+   
+    const response = await axios.get(`${BASE_URL}`, {
+      params : {
+      key: '29531020-3b97d8056313c52b7859c1bca',
+      q: `${q}`,
+      image_type: `photo`,
+      orientation: `horizontal`,
+      safesearch: `true`,
+      per_page: 40,
+      page: `${ page }`, 
+    },
+    });
    
       return response;
   }
