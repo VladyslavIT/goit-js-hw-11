@@ -89,6 +89,7 @@ body {
     margin-right: 5px;
 }
 .load-more {
+    display: block;
     margin: 0 auto;
     margin-bottom: 50px;
     width: 110px;
@@ -99,6 +100,9 @@ body {
     color: rgb(200, 223, 243);
     background-color: rgb(109, 199, 199);
     border-radius: 4px;
+}
+.hide-btn {
+    display: none;
 }
 .load-more:hover,
 .load-more:focus {

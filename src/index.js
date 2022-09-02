@@ -3,62 +3,62 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import fetchImages from './api/fetchImages';
-import { renderImage } from './template/markup';
+import { renderImage } from './template/renderImage';
 
 const formEl = document.querySelector('.search-form');
 const galleryEl = document.querySelector('.gallery');
 const buttonLoadEl = document.querySelector('.load-more');
 
 let page = 1;
-let images = '';
+let query = '';
 let showLightbox = null;
-buttonLoadEl.style.display = 'none';
+let repeatQuery = null;
 
 const onSearchImages = event => {
   event.preventDefault();
-  clearPage();
-  const images = event.target.elements.searchQuery.value.trim();
+  query = event.target.elements.searchQuery.value.trim();
 
-  fetchImages(images, page).then(image => {
-    console.log(image);
+  if (query === repeatQuery && query !== '') {
+    Notiflix.Notify.failure('Please enter another word!');
+    return;
+  }
+  repeatQuery = event.target.elements.searchQuery.value.trim();
+
+  if (query === '') {
+    Notiflix.Notify.info('Please enter a word to search.');
+    return;
+  }
+
+  clearPage();
+
+  fetchImages(query, page).then(image => {
     if (image.data.total === 0) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
       return;
     }
-    if (images === '') {
-      Notiflix.Notify.info('Please enter a word to search.');
-      const array = image.data;
-      galleryEl.insertAdjacentHTML('afterbegin', renderImage(array));
-      buttonLoadEl.style.display = 'block';
-      return;
+    if (image.data.totalHits > 40) {
+      buttonLoadEl.classList.remove('hide-btn');
     }
-    if (page >= 1) {
-     Notiflix.Notify.success(
-        `Hooray! We found ${image.data.totalHits} images.`
-      );
-      const array = image.data;
-      galleryEl.innerHTML = '';
-      galleryEl.insertAdjacentHTML('afterbegin', renderImage(array));
-      buttonLoadEl.style.display = 'block';
-    } 
-    if (image.data.hits.length < 40) {
-      buttonLoadEl.style.display = 'none';
-    }
+    Notiflix.Notify.success(`Hooray! We found ${image.data.totalHits} images.`);
+    galleryEl.innerHTML = '';
+    galleryEl.insertAdjacentHTML('afterbegin', renderImage(image.data));
   });
 };
 
 const onLoadMore = event => {
-  fetchImages(images, (page += 1)).then(image => {
-    const array = image.data;
+  page += 1;
+  fetchImages(query, page).then(image => {
     if (Math.floor(image.data.totalHits / 40) < page) {
       Notiflix.Notify.info(
         'We are sorry, but you have reached the end of search results.'
       );
+      galleryEl.insertAdjacentHTML('beforeend', renderImage(image.data));
+      buttonLoadEl.classList.add('hide-btn');
       return;
     }
-    galleryEl.insertAdjacentHTML('beforeend', renderImage(array));
+    galleryEl.insertAdjacentHTML('beforeend', renderImage(image.data));
     showLightbox.refresh();
   });
 };
@@ -76,13 +76,14 @@ const onShowLargeImage = event => {
 const clearPage = () => {
   page = 1;
   galleryEl.innerHTML = '';
-  buttonLoadEl.style.display = 'none';
-}
+  buttonLoadEl.classList.add('hide-btn');
+};
 
 formEl.addEventListener('submit', onSearchImages);
 buttonLoadEl.addEventListener('click', onLoadMore);
 galleryEl.addEventListener('click', onShowLargeImage);
 
+// Scroll
 let lastScroll = 0;
 const defaultOffset = 100;
 
@@ -99,7 +100,10 @@ window.addEventListener('scroll', () => {
   ) {
     //scroll up-down
     formEl.classList.add('hide');
-  } 
+  }
+  if (scrollPosition() < defaultOffset && containHide()) {
+    formEl.classList.remove('hide');
+  }
   lastScroll = scrollPosition();
 });
 formEl.addEventListener('mouseover', () => {
