@@ -11,18 +11,19 @@ const buttonLoadEl = document.querySelector('.load-more');
 
 let page = 1;
 let query = '';
-let showLightbox = null;
-let repeatQuery = null;
+let showLightbox = new SimpleLightbox('.gallery a', { captionDelay: 250 });
 
 const onSearchImages = event => {
   event.preventDefault();
-  query = event.target.elements.searchQuery.value.trim();
 
-  if (query === repeatQuery && query !== '') {
+  if (
+    query === event.target.elements.searchQuery.value.trim() &&
+    query !== ''
+  ) {
     Notiflix.Notify.failure('Please enter another word!');
     return;
   }
-  repeatQuery = event.target.elements.searchQuery.value.trim();
+  query = event.target.elements.searchQuery.value.trim();
 
   if (query === '') {
     Notiflix.Notify.info('Please enter a word to search.');
@@ -44,6 +45,7 @@ const onSearchImages = event => {
     Notiflix.Notify.success(`Hooray! We found ${image.data.totalHits} images.`);
     galleryEl.innerHTML = '';
     galleryEl.insertAdjacentHTML('afterbegin', renderImage(image.data));
+    showLightbox.refresh();
   });
 };
 
@@ -63,16 +65,6 @@ const onLoadMore = event => {
   });
 };
 
-const onShowLargeImage = event => {
-  event.preventDefault();
-  if (event.target.nodeName !== 'IMG') {
-    return;
-  }
-  if (!showLightbox) {
-    showLightbox = new SimpleLightbox('.gallery a', { captionDelay: 250 });
-  }
-};
-
 const clearPage = () => {
   page = 1;
   galleryEl.innerHTML = '';
@@ -81,7 +73,6 @@ const clearPage = () => {
 
 formEl.addEventListener('submit', onSearchImages);
 buttonLoadEl.addEventListener('click', onLoadMore);
-galleryEl.addEventListener('click', onShowLargeImage);
 
 // Scroll
 let lastScroll = 0;
